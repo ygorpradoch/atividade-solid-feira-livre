@@ -1,0 +1,24 @@
+package feira.solucao.pagamento;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class ServicoPagamento {
+    private final Map<String, ProcessadorPagamento> processadoresPorCodigo = new HashMap<>();
+
+    public ServicoPagamento(List<ProcessadorPagamento> processadores) {
+        for (ProcessadorPagamento processador : processadores) {
+            this.processadoresPorCodigo.put(processador.codigo().toUpperCase(), processador);
+        }
+    }
+
+    public void pagar(String codigoPagamento, double valor) {
+        if (codigoPagamento == null) throw new IllegalArgumentException("Forma de pagamento é obrigatória");
+        
+        ProcessadorPagamento processador = processadoresPorCodigo.get(codigoPagamento.toUpperCase());
+        if (processador == null) throw new IllegalArgumentException("Pagamento não suportado: " + codigoPagamento);
+        
+        processador.pagar(valor);
+    }
+}
